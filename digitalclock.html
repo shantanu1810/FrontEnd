@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        h1{
+            font-size: 80px;
+        }
+        .menu{
+            height:50px;
+            width:300px;
+            border:2px solid black;
+            border-radius: 5px;
+        }
+        .btn1{
+            width:100px;
+            height:50px;
+            float:left;
+        }
+        .btn2{
+            width:40px;
+            height:30px;
+            border:2px solid black;
+        }
+    </style>
+</head>
+<body onload="time()">
+    <script>
+        var clk,st;var hrs=0,mn=0,ss=0,ms=0,f=0,f1=0;
+        function time(){
+            if(f1==0){
+                document.getElementsByTagName('h1')[0].innerText='';
+                document.getElementsByClassName('start_stop')[0].innerHTML='';
+                f1=1;
+                clk=setInterval(function(){
+                    let date=new Date();
+                    let h=date.getHours();
+                    let m=date.getMinutes();
+                    let s=date.getSeconds();
+                    h=(h<10)?'0'+h:h;
+                    m=(m<10)?'0'+m:m;
+                    s=(s<10)?'0'+s:s;
+                    document.getElementsByTagName('h1')[0].innerText=h+':'+m+':'+s;
+                },1000
+                )
+            }
+        }
+        function stopwatch(){
+            document.getElementsByTagName('h1')[0].innerText='00:00:00:00';
+            document.getElementsByClassName('start_stop')[0].innerHTML='<button onclick="startWatch()" class="btn2">start</button><button onclick="stop()" class="btn2">stop</button><button onclick="reset(1)" class="btn2">reset</button>';
+        }
+        function startWatch(){
+            if(f==0){
+                f=1;
+                st=setInterval(
+                    function(){
+                    if(ms==99){
+                        ms=0;
+                        if(ss==59){
+                            ss=0;
+                            if(mn==59){
+                                mn=0;
+                                h+=1;
+                            }else{
+                                m+=1;
+                            }
+                        }else{
+                            ss+=1;
+                        }
+                    }else{
+                        ms+=1;
+                    }
+                    let hr=(hrs<10)?'0'+hrs.toString():hrs.toString();
+                    let min=(mn<10)?'0'+mn.toString():mn.toString();
+                    let sec=(ss<10)?'0'+ss.toString():ss.toString();
+                    let msec=(ms<10)?'0'+ms.toString():ms.toString();
+                    document.getElementsByTagName('h1')[0].innerText=hr+':'+min+':'+sec+':'+msec;
+                },10
+                )
+            }
+        }
+        function stop(){
+            clearInterval(st);
+            f=0;
+        }
+        function reset(d){
+            if(d==1){
+            document.getElementsByTagName('h1')[0].innerText='00:00:00:00';
+            f=0;
+            hrs=mn=ss=ms=0;
+            }
+            stop();
+        }
+        function stopclock(){
+            clearInterval(clk);
+            f1=0;
+        }
+        function operate(d){
+            if(d==2){
+                stopclock();
+                stopwatch();
+            }else if(d==3){
+                stopclock();
+                reset(0);
+                timer();
+            }else{
+                time();
+                reset(0);
+            }
+        }
+        function timer(){
+            document.getElementsByTagName('h1')[0].innerHTML="<input class='tival'type='text' style='height:100px;width:60px;font-size:50px;border:2px solid white;;' value='00'/>:<input class='tival' type='text' style='height:100px;width:60px;font-size:50px;border:2px solid white;' value='00'/>:<input class='tival' type='text' style='height:100px;width:60px;font-size:50px;border:2px solid white;;' value='00'/>";
+            document.getElementsByClassName('start_stop')[0].innerHTML='<button onclick="st_timer()" class="btn2">start</button>';
+        }
+        function st_timer(){
+            let h=document.getElementsByClassName('tival')[0].value;
+            let m=document.getElementsByClassName('tival')[1].value;
+            let s=document.getElementsByClassName('tival')[2].value;
+            var d;
+            m=Number(m);
+            h=Number(h);
+            s=Number(s);
+            d=setInterval(function(){
+                if(s==0){
+                    if(m==0){
+                        if(h==0){
+                            clearInterval(d);
+                        }else{
+                            h-=1;
+                            m=59;
+                            s=59;
+                        }
+                    }else{
+                        m-=1;
+                        s=59;
+                    }
+                }else{
+                    s-=1;
+                }
+                document.getElementsByClassName('tival')[0].value=(h<10)?'0'+h:h;
+                document.getElementsByClassName('tival')[1].value=(m<10)?'0'+m:m;
+                document.getElementsByClassName('tival')[2].value=(s<10)?'0'+s:s;
+            },1000
+            )
+        }
+    </script>
+    <div class="menu">
+        <button class='btn1' onclick="operate(1)">clock</button>
+        <button class='btn1' onclick="operate(2)">stopwatch</button>
+        <button class='btn1' onclick="operate(3)">Timer</button>
+    </div>
+    <h1></h1>
+    <div class="start_stop">
+    </div>
+</body>
+</html>

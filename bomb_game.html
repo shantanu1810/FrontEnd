@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        html,body{
+            height:100%;
+        }
+        html{
+            display: table;
+            margin:auto;
+            padding-top: 50px;
+        }
+        body{
+            display:table-cell;
+            vertical-align: center;
+        }
+        .block{
+            height:300px;
+            width:300px;
+        }
+        .cell{
+            height:8%;
+            width:8%;
+            border:0.5px solid black;
+            background:aqua;
+            text-align: center;
+            float:left;
+            padding:auto;
+        }
+        .message{
+            height:30px;
+            width:160px;
+            float:left;
+            margin:10px;
+            padding:auto;
+            font-weight: bold;
+        }
+        button{
+            height:30px;
+            width:80px;
+            margin-top: 10px;
+            padding:auto;
+            font-weight: bold;
+            border-radius: 8px;
+        }
+    </style>
+    <script>
+        var a=new Array(11);
+        var f=1,st_pt=0,fla=0;
+        function cell_matrix(){
+            var e=document.getElementsByClassName("block")[0];
+            var c="";
+            for(let i=0;i<121;i++){
+                c+='<div class="cell" onclick="change_cell('+i.toString()+')"></div>';
+            }
+            e.innerHTML=c;
+        }
+        function fill_bomb(){
+            cell_matrix();
+            var j,c;
+            for(let i=0;i<11;){
+                c=Math.floor(Math.random()*122);
+                for(j=0;j<i;j++){
+                    if(a[j]==c)
+                    break;
+                }
+                if(j==i){
+                    a[i]=c;
+                    i++;
+                }
+            }
+        }
+        function check(d){
+            for(var i=0;i<11;i++){
+                if(a[i]==d)
+                return 1;
+            }
+            return 0;
+        }
+        function around(d){
+            var c=0;
+            if(d-11>=0){
+                if(check(d-11)==1)
+                c++;
+                if(d-11-1>=0&&(d-11)%11!=0){
+                    if(check(d-11-1)==1)
+                    c++;
+                }
+                if((d-11+1)%11!=0){
+                    if(check(d-11+1)==1)
+                    c++;
+                }
+            }
+            if(d+11<121){
+                if(check(d+11)==1)
+                c++;
+                if((d+1)%11!=0){
+                    if(check(d+11+1)==1)
+                    c++;
+                }if(d%11!=0){
+                    if(check(d+11-1)==1)
+                    c++;
+                }
+            }if(d%11!=0){
+                if(check(d-1)==1)
+                c++;
+            }if((d+1)%11!=0){
+                if(check(d+1)==1)
+                c++;
+            }
+            return c;
+        }
+        function change_cell(c){
+            var d=parseInt(c);
+            st_pt+=1;
+            var e=document.getElementsByClassName('cell')[d];
+            if(fla==1){
+                e.innerHTML="&#128681";
+            }
+            else if(check(d)==1&&f==0){
+                e.style.background="rgba(255, 50, 50, 0.7)";
+                e.innerHTML="&#128163";
+                f=1;
+                document.getElementsByClassName("message")[0].innerHTML="YOU LOST!!";
+                show_all();
+            }else if(f==0){
+                e.style.background="white";
+                var aro=around(d);
+                if(aro==0){
+                    safe_space(d);
+                }else{
+                    e.innerHTML=aro;
+                }
+            }
+            if(st_pt==111&&f==0){
+                e=document.getElementsByClassName("message")[0];
+                e.innerHTML="CONGRATULATION !!!"
+                show_all();
+            }
+        }
+        function start(){
+            if(st_pt!=0){
+                fill_bomb();
+                st_pt=0;
+                document.getElementsByClassName("message")[0].innerHTML="START PLAY!!";
+            }
+            document.getElementsByClassName("message")[0].innerHTML="START PLAY!!";
+            document.getElementsByTagName("button")[0].innerText="RESTART"
+            f=0;
+            flag_dis();
+        }
+        function safe_space(d){
+            let i,j,k;
+        }
+        function show_all(){
+            for(let i=0;i<11;i++){
+                var e=document.getElementsByClassName('cell')[a[i]];
+                e.style.background="rgba(255, 50, 50, 0.7)";
+                e.innerHTML="&#128163";
+            }
+        }
+        function flag_dis(){
+            var e=document.getElementsByClassName('fl')[0];
+            e.innerHTML='<button style="width:40px" onclick="flag()">&#128681</button>';
+        }
+        function flag(){
+            if(fla==0)
+            fla=1;
+            else
+            fla=0;
+        }
+    </script>
+</head>
+<body onload="fill_bomb()">
+    <div class="block"></div> 
+    <div class="message" >CLICK ON START</div>
+    <button onclick="start()">START</button>
+    <div class="fl"></div>
+</body>
+</html>
